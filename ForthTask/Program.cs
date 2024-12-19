@@ -1,4 +1,3 @@
-﻿
 using System.Text;
 
 namespace ForthTask
@@ -10,8 +9,8 @@ namespace ForthTask
             using (StreamReader sr = new StreamReader("forth_input.txt"))
             {
                 string line = sr.ReadLine();
-                char[,] check = new char[4, line.Length];
-                for (int i = 0; i < 4; i++)
+                char[,] check = new char[3, line.Length];
+                for (int i = 0; i < 3; i++)
                 {
                     for (int j = 0; j < line.Length; j++)
                     {
@@ -19,18 +18,36 @@ namespace ForthTask
                     }
                     line = sr.ReadLine();
                 }
-                int count = 0;
+                int count = DiagXMAS(check);
                 while (line != null)
                 {
+                    check = MoveToNextRow(check, line);
                     count += DiagXMAS(check);
+                    line = sr.ReadLine();
                 }
+                Console.WriteLine(count);
             }
         }
 
         private static int DiagXMAS(char[,] check)
         {
             int count = 0;
+            StringBuilder wordUp = new StringBuilder();
+            StringBuilder wordDown = new StringBuilder();
+            for (int i = 0; i < check.GetLength(1) - 2; i++)
+            {
+                wordUp.Append(check[0, i]);
+                wordUp.Append(check[1, i + 1]);
+                wordUp.Append(check[2, i + 2]);
 
+                wordDown.Append(check[0, i + 2]);
+                wordDown.Append(check[1, i + 1]);
+                wordDown.Append(check[2, i]);
+
+                if (XmasCheck(wordDown.ToString()) && XmasCheck(wordUp.ToString())) count++;
+                wordDown.Clear();
+                wordUp.Clear();
+            }
             return count;
         }
 
